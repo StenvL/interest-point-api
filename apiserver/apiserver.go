@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/StenvL/interest-points-api/controllers"
+	"github.com/StenvL/interest-points-api/store"
 	"github.com/gorilla/mux"
 	"github.com/sirupsen/logrus"
 )
@@ -13,6 +14,7 @@ type APIServer struct {
 	config *Config
 	logger *logrus.Logger
 	router *mux.Router
+	store  *store.Store
 }
 
 //New method to create new API Server
@@ -29,7 +31,12 @@ func (s *APIServer) Start() error {
 	if err := s.configureLogger(); err != nil {
 		return err
 	}
-	s.configureRouter()
+
+	s.configurateRouter()
+
+	if err := s.configurateStore(); err != nil {
+		return err
+	}
 
 	return http.ListenAndServe(s.config.BindAddr, s.router)
 }
@@ -45,7 +52,19 @@ func (s *APIServer) configureLogger() error {
 	return nil
 }
 
-func (s *APIServer) configureRouter() {
+func (s *APIServer) configurateStore() error {
+	store := store.New(s.config.Store)
+
+	if err := store.Open(); err != nil {
+		return err
+	}
+
+	s.store = store
+
+	return nil
+}
+
+func (s *APIServer) configurateRouter() {
 	s.router.HandleFunc("/api/points", controllers.GetAllPointsHandler()).Methods("GET")
 	s.router.HandleFunc("/api/points/{id}", controllers.GetPointByIDHandler()).Methods("GET")
 	s.router.HandleFunc("/api/points", controllers.CreatePoint()).Methods("POST")

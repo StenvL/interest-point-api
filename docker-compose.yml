@@ -1,0 +1,30 @@
+version: '2.1'
+services:
+  apiserver:
+    container_name: apiserver
+    build: .
+    env_file: .env
+    ports:
+      - "${DOCKER_PORT}:3000"
+    volumes:
+      - ./:/go/src/app
+    entrypoint: ./start.sh 
+    depends_on:
+      mysql:
+        condition: service_healthy
+
+  mysql:
+    container_name: mysql_apiserver
+    image: mysql
+    ports:
+      - "3306:3306"
+    volumes:
+      - ${DATA_SAVE_PATH}:/var/lib/mysql 
+      - ./db/init.sql:/init.sql
+    command: --init-file /init.sql
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "${MYSQL_HOST}", "-P", "${MYSQL_PORT}"]
+      timeout: 2s
+      retries: 20
