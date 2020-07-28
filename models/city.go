@@ -2,6 +2,6 @@ package models
 
 // City model
 type City struct {
-	BaseModel
+	ID   uint64
 	Name string
 }

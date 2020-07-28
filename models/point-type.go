@@ -2,6 +2,6 @@ package models
 
 // PointType model
 type PointType struct {
-	BaseModel
+	ID   uint64
 	Name string
 }
