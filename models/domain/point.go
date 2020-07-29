@@ -13,6 +13,14 @@ type Point struct {
 	Lat         float32
 }
 
+//NewEmptyPoint creates empty point
+func NewEmptyPoint() *Point {
+	return &Point{
+		Type: &PointType{},
+		City: &City{},
+	}
+}
+
 //NewPoint creates point from request model
 func NewPoint(pointRequest *requests.PointRequest) *Point {
 	return &Point{

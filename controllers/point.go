@@ -10,21 +10,40 @@ import (
 
 	"github.com/StenvL/interest-points-api/models/domain"
 	"github.com/StenvL/interest-points-api/models/requests"
+	"github.com/StenvL/interest-points-api/models/responses"
 	"github.com/StenvL/interest-points-api/services"
 	"github.com/StenvL/interest-points-api/utils"
 )
 
 //GetAllPointsHandler returns all points
-func GetAllPointsHandler() http.HandlerFunc {
+func GetAllPointsHandler(s *services.PointService) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		temp := []int{1, 2, 3}
+		cityIDParam := r.URL.Query().Get("city")
+
+		if len(cityIDParam) == 0 {
+			utils.JSONError(w, "City param must be present", "", http.StatusBadRequest)
+			return
+		}
+
+		cityID, err := strconv.ParseUint(cityIDParam, 10, 32)
+		if err != nil {
+			utils.JSONError(w, "City param is incorrect", err.Error(), http.StatusBadRequest)
+			return
+		}
+
+		points, err := s.GetAll(cityID)
+		if err != nil {
+			utils.JSONError(w, "An error occurred while getting points list", err.Error(), http.StatusBadRequest)
+			return
+		}
+
 		w.Header().Set("Content-Type", "application/json")
-		json.NewEncoder(w).Encode(temp)
+		json.NewEncoder(w).Encode(points)
 	}
 }
 
 //GetPointByIDHandler returns point by its identifier
-func GetPointByIDHandler(service *services.PointService) http.HandlerFunc {
+func GetPointByIDHandler(s *services.PointService) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		id, err := strconv.ParseUint(mux.Vars(r)["id"], 10, 32)
 		if err != nil {
@@ -32,19 +51,20 @@ func GetPointByIDHandler(service *services.PointService) http.HandlerFunc {
 			return
 		}
 
-		point, err := service.GetByID(id)
+		point, err := s.GetByID(id)
+
 		if err != nil {
 			utils.JSONError(w, "An error occurred while getting point by ID", err.Error(), http.StatusBadRequest)
 			return
 		}
 
 		w.Header().Set("Content-Type", "application/json")
-		json.NewEncoder(w).Encode(point)
+		json.NewEncoder(w).Encode(responses.NewPointResponse(point))
 	}
 }
 
 //GetClosestPointsHandler returns nearest points
-func GetClosestPointsHandler() http.HandlerFunc {
+func GetClosestPointsHandler(s *services.PointService) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		temp := []int{1, 2, 3}
 		w.Header().Set("Content-Type", "application/json")
@@ -53,7 +73,7 @@ func GetClosestPointsHandler() http.HandlerFunc {
 }
 
 //CreatePoint creates new point
-func CreatePoint(service *services.PointService) http.HandlerFunc {
+func CreatePoint(s *services.PointService) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var pointRequest *requests.PointRequest
 
@@ -65,7 +85,7 @@ func CreatePoint(service *services.PointService) http.HandlerFunc {
 
 		pointDomain := domain.NewPoint(pointRequest)
 
-		err = service.Create(pointDomain)
+		err = s.Create(pointDomain)
 		if err != nil {
 			utils.JSONError(w, "An error accurred while creating the point", err.Error(), http.StatusInternalServerError)
 			return
@@ -77,7 +97,7 @@ func CreatePoint(service *services.PointService) http.HandlerFunc {
 }
 
 //EditPoint edites existing point
-func EditPoint() http.HandlerFunc {
+func EditPoint(s *services.PointService) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		temp := []int{1, 2, 3}
 		w.Header().Set("Content-Type", "application/json")

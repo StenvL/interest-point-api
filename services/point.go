@@ -2,7 +2,6 @@ package services
 
 import (
 	"github.com/StenvL/interest-points-api/models/domain"
-	responses "github.com/StenvL/interest-points-api/models/responses"
 	"github.com/StenvL/interest-points-api/store"
 )
 
@@ -18,8 +17,19 @@ func NewPointService(store *store.Store) *PointService {
 	}
 }
 
+//GetAll returns all points
+func (p *PointService) GetAll(cityID uint64) ([]*domain.Point, error) {
+	points, err := p.store.Point().GetAll(cityID)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return points, nil
+}
+
 //GetByID returns point by its identifier
-func (p *PointService) GetByID(id uint64) (*responses.PointResponse, error) {
+func (p *PointService) GetByID(id uint64) (*domain.Point, error) {
 	point, err := p.store.Point().GetByID(id)
 
 	if err != nil {
@@ -30,7 +40,7 @@ func (p *PointService) GetByID(id uint64) (*responses.PointResponse, error) {
 		return nil, nil
 	}
 
-	return responses.NewPointResponse(point), nil
+	return point, nil
 }
 
 //Create new point

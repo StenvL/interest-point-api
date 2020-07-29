@@ -38,13 +38,37 @@ func (r *PointRepository) Create(point *domain.Point) error {
 	return nil
 }
 
+//GetAll returns all points
+func (r *PointRepository) GetAll(cityID uint64) ([]*domain.Point, error) {
+	rows, err := r.store.db.Query(
+		"SELECT p.id, p.name, p.description, p.lon, p.lat, pt.id, pt.name, c.id, c.name FROM point p JOIN point_type pt ON p.type_id = pt.id JOIN city c ON p.city_id = c.id where c.id = ?",
+		cityID,
+	)
+
+	if err != nil {
+		return nil, err
+	}
+
+	defer rows.Close()
+
+	points := make([]*domain.Point, 0)
+	for rows.Next() {
+		point := domain.NewEmptyPoint()
+		err := rows.Scan(&point.ID, &point.Name, &point.Description, &point.Lon, &point.Lat, &point.Type.ID, &point.Type.Name, &point.City.ID, &point.City.Name)
+
+		if err != nil {
+			return nil, err
+		}
+
+		points = append(points, point)
+	}
+
+	return points, nil
+}
+
 //GetByID returns the point by its identifier
 func (r *PointRepository) GetByID(id uint64) (*domain.Point, error) {
-	point := &domain.Point{
-		ID:   id,
-		Type: &domain.PointType{},
-		City: &domain.City{},
-	}
+	point := domain.NewEmptyPoint()
 
 	err := r.store.db.QueryRow(
 		"SELECT p.name, p.description, p.lon, p.lat, pt.id, pt.name, c.id, c.name FROM point p JOIN point_type pt ON p.type_id = pt.id JOIN city c ON p.city_id = c.id WHERE p.id = ?;",
