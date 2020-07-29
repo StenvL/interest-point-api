@@ -1,5 +1,4 @@
 bind_addr = ":8080"
-log_level = "debug"
 
 [store]
 database_url = "root:123456@tcp(docker.for.mac.localhost:3306)/interest_points"

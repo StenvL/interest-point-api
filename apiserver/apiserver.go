@@ -1,18 +1,19 @@
 package apiserver
 
 import (
+	"log"
 	"net/http"
 
 	"github.com/StenvL/interest-points-api/controllers"
+	"github.com/StenvL/interest-points-api/services"
 	"github.com/StenvL/interest-points-api/store"
+
 	"github.com/gorilla/mux"
-	"github.com/sirupsen/logrus"
 )
 
 //APIServer type for creating and configuring server for API.
 type APIServer struct {
 	config *Config
-	logger *logrus.Logger
 	router *mux.Router
 	store  *store.Store
 }
@@ -21,7 +22,6 @@ type APIServer struct {
 func New(config *Config) *APIServer {
 	return &APIServer{
 		config: config,
-		logger: logrus.New(),
 		router: mux.NewRouter(),
 	}
 }
@@ -37,17 +37,6 @@ func (s *APIServer) Start() error {
 	log.Println("Starting API server...")
 
 	return http.ListenAndServe(s.config.BindAddr, s.router)
-}
-
-func (s *APIServer) configureLogger() error {
-	level, err := logrus.ParseLevel(s.config.LogLevel)
-	if err != nil {
-		return err
-	}
-
-	s.logger.SetLevel(level)
-
-	return nil
 }
 
 func (s *APIServer) configurateStore() error {
