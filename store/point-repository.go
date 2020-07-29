@@ -11,6 +11,32 @@ type PointRepository struct {
 	store *Store
 }
 
+//Create new point
+func (r *PointRepository) Create(point *domain.Point) error {
+	res, err := r.store.db.Exec(
+		"INSERT INTO point (name, description, type_id, city_id, lon, lat) VALUES (?, ?, ?, ?, ?, ?);",
+		point.Name,
+		point.Description,
+		point.Type.ID,
+		point.City.ID,
+		point.Lon,
+		point.Lat,
+	)
+
+	if err != nil {
+		return err
+	}
+
+	id, err := res.LastInsertId()
+
+	if err != nil {
+		return err
+	}
+
+	point.ID = uint64(id)
+
+	return nil
+}
 
 //GetByID returns the point by its identifier
 func (r *PointRepository) GetByID(id uint64) (*domain.Point, error) {

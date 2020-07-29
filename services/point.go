@@ -1,6 +1,7 @@
 package services
 
 import (
+	"github.com/StenvL/interest-points-api/models/domain"
 	responses "github.com/StenvL/interest-points-api/models/responses"
 	"github.com/StenvL/interest-points-api/store"
 )
@@ -30,4 +31,15 @@ func (p *PointService) GetByID(id uint64) (*responses.PointResponse, error) {
 	}
 
 	return responses.NewPointResponse(point), nil
+}
+
+//Create new point
+func (p *PointService) Create(point *domain.Point) error {
+	err := p.store.Point().Create(point)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
