@@ -1,6 +1,6 @@
 package domain
 
-// Point model
+//Point domain model
 type Point struct {
 	ID          uint64
 	Name        string

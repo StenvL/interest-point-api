@@ -1,6 +1,6 @@
 package responses
 
-// PointResponse model
+//PointDetailedResponse response model
 type PointDetailedResponse struct {
 	ID          uint64             `json:"id"`
 	Name        string             `json:"name"`

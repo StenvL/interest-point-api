@@ -2,7 +2,7 @@ package responses
 
 import "github.com/StenvL/interest-points-api/models/domain"
 
-// PointResponse model
+//PointResponse response model
 type PointResponse struct {
 	ID          uint64             `json:"id"`
 	Name        string             `json:"name"`

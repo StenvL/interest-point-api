@@ -1,6 +1,6 @@
 package domain
 
-// City model
+//City domain model
 type City struct {
 	ID   uint64
 	Name string
