@@ -15,3 +15,5 @@
 # vendor/
 
 /mysql-data
+interest-points-api
+.DS_Store
