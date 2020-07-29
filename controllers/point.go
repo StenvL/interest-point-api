@@ -3,6 +3,11 @@ package controllers
 import (
 	"encoding/json"
 	"net/http"
+	"strconv"
+
+	"github.com/gorilla/mux"
+
+	"github.com/StenvL/interest-points-api/services"
 )
 
 //GetAllPointsHandler returns all points
@@ -15,11 +20,16 @@ func GetAllPointsHandler() http.HandlerFunc {
 }
 
 //GetPointByIDHandler returns point by its identifier
-func GetPointByIDHandler() http.HandlerFunc {
+func GetPointByIDHandler(service *services.PointService) http.HandlerFunc {
 	return func(writer http.ResponseWriter, request *http.Request) {
-		temp := []int{1, 2, 3}
+		// ToDo: handle error!
+		id, _ := strconv.ParseUint(mux.Vars(request)["id"], 10, 32)
+
+		// ToDo: handle error!
+		point, _ := service.GetByID(id)
+
 		writer.Header().Set("Content-Type", "application/json")
-		json.NewEncoder(writer).Encode(temp)
+		json.NewEncoder(writer).Encode(point)
 	}
 }
 

@@ -28,15 +28,13 @@ func New(config *Config) *APIServer {
 
 //Start method to start API server
 func (s *APIServer) Start() error {
-	if err := s.configureLogger(); err != nil {
+	if err := s.configurateStore(); err != nil {
 		return err
 	}
 
 	s.configurateRouter()
 
-	if err := s.configurateStore(); err != nil {
-		return err
-	}
+	log.Println("Starting API server...")
 
 	return http.ListenAndServe(s.config.BindAddr, s.router)
 }
@@ -65,8 +63,10 @@ func (s *APIServer) configurateStore() error {
 }
 
 func (s *APIServer) configurateRouter() {
+	pointService := services.NewPointService(s.store)
+
 	s.router.HandleFunc("/api/points", controllers.GetAllPointsHandler()).Methods("GET")
-	s.router.HandleFunc("/api/points/{id}", controllers.GetPointByIDHandler()).Methods("GET")
+	s.router.HandleFunc("/api/points/{id}", controllers.GetPointByIDHandler(pointService)).Methods("GET")
 	s.router.HandleFunc("/api/points", controllers.CreatePoint()).Methods("POST")
 	s.router.HandleFunc("/api/points", controllers.EditPoint()).Methods("PUT")
 	s.router.HandleFunc("/api/closest-points", controllers.GetClosestPointsHandler()).Methods("GET")
