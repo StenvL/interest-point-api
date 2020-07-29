@@ -8,6 +8,7 @@ import (
 	"github.com/gorilla/mux"
 
 	"github.com/StenvL/interest-points-api/services"
+	"github.com/StenvL/interest-points-api/utils"
 )
 
 //GetAllPointsHandler returns all points
@@ -22,11 +23,18 @@ func GetAllPointsHandler() http.HandlerFunc {
 //GetPointByIDHandler returns point by its identifier
 func GetPointByIDHandler(service *services.PointService) http.HandlerFunc {
 	return func(writer http.ResponseWriter, request *http.Request) {
-		// ToDo: handle error!
-		id, _ := strconv.ParseUint(mux.Vars(request)["id"], 10, 32)
+		id, err := strconv.ParseUint(mux.Vars(request)["id"], 10, 32)
+		if err != nil {
+			writer.Header().Set("Content-Type", "application/json")
+			utils.JSONError(writer, "Point ID is incorrect", err.Error(), http.StatusBadRequest)
+			return
+		}
 
-		// ToDo: handle error!
-		point, _ := service.GetByID(id)
+		point, err := service.GetByID(id)
+		if err != nil {
+			utils.JSONError(writer, "An error occurred while getting point by ID", err.Error(), http.StatusBadRequest)
+			return
+		}
 
 		writer.Header().Set("Content-Type", "application/json")
 		json.NewEncoder(writer).Encode(point)
