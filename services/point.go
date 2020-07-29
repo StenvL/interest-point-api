@@ -25,7 +25,9 @@ func (p *PointService) GetByID(id uint64) (*responses.PointResponse, error) {
 		return nil, err
 	}
 
-	pointResponse := responses.NewPointResponse(point)
+	if point == nil {
+		return nil, nil
+	}
 
-	return pointResponse, nil
+	return responses.NewPointResponse(point), nil
 }
