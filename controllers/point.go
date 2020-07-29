@@ -15,8 +15,8 @@ import (
 	"github.com/StenvL/interest-points-api/utils"
 )
 
-//GetAllPointsHandler returns all points
-func GetAllPointsHandler(s *services.PointService) http.HandlerFunc {
+//GetPointsByCityHandler returns all points by city
+func GetPointsByCityHandler(s *services.PointService) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		cityIDParam := r.URL.Query().Get("city")
 
@@ -31,7 +31,7 @@ func GetAllPointsHandler(s *services.PointService) http.HandlerFunc {
 			return
 		}
 
-		points, err := s.GetAll(cityID)
+		points, err := s.GetAllByCity(cityID)
 		if err != nil {
 			utils.JSONError(w, "An error occurred while getting points list", err.Error(), http.StatusBadRequest)
 			return

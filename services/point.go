@@ -17,9 +17,9 @@ func NewPointService(store *store.Store) *PointService {
 	}
 }
 
-//GetAll returns all points
-func (p *PointService) GetAll(cityID uint64) ([]*domain.Point, error) {
-	points, err := p.store.Point().GetAll(cityID)
+//GetAllByCity returns all points by city
+func (p *PointService) GetAllByCity(cityID uint64) ([]*domain.Point, error) {
+	points, err := p.store.Point().GetAllByCity(cityID)
 
 	if err != nil {
 		return nil, err

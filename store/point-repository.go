@@ -38,8 +38,8 @@ func (r *PointRepository) Create(point *domain.Point) error {
 	return nil
 }
 
-//GetAll returns all points
-func (r *PointRepository) GetAll(cityID uint64) ([]*domain.Point, error) {
+//GetAllByCity returns all points by city
+func (r *PointRepository) GetAllByCity(cityID uint64) ([]*domain.Point, error) {
 	rows, err := r.store.db.Query(
 		"SELECT p.id, p.name, p.description, p.lon, p.lat, pt.id, pt.name, c.id, c.name FROM point p JOIN point_type pt ON p.type_id = pt.id JOIN city c ON p.city_id = c.id where c.id = ?",
 		cityID,

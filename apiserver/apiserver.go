@@ -54,7 +54,7 @@ func (s *APIServer) configurateStore() error {
 func (s *APIServer) configurateRouter() {
 	pointService := services.NewPointService(s.store)
 
-	s.router.HandleFunc("/api/points", controllers.GetAllPointsHandler(pointService)).Methods("GET")
+	s.router.HandleFunc("/api/points", controllers.GetPointsByCityHandler(pointService)).Methods("GET")
 	s.router.HandleFunc("/api/points/{id}", controllers.GetPointByIDHandler(pointService)).Methods("GET")
 	s.router.HandleFunc("/api/points", controllers.CreatePoint(pointService)).Methods("POST")
 	s.router.HandleFunc("/api/points", controllers.EditPoint(pointService)).Methods("PUT")
