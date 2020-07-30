@@ -8,9 +8,7 @@ import (
 
 	"github.com/gorilla/mux"
 
-	"github.com/StenvL/interest-points-api/models/domain"
 	"github.com/StenvL/interest-points-api/models/requests"
-	"github.com/StenvL/interest-points-api/models/responses"
 	"github.com/StenvL/interest-points-api/services"
 	"github.com/StenvL/interest-points-api/utils"
 )
@@ -51,7 +49,7 @@ func GetPointByIDHandler(s *services.PointService) http.HandlerFunc {
 			return
 		}
 
-		point, err := s.GetByID(id)
+		pointResponse, err := s.GetByID(id)
 
 		if err != nil {
 			utils.JSONError(w, "An error occurred while getting point by ID", err.Error(), http.StatusBadRequest)
@@ -59,7 +57,7 @@ func GetPointByIDHandler(s *services.PointService) http.HandlerFunc {
 		}
 
 		w.Header().Set("Content-Type", "application/json")
-		json.NewEncoder(w).Encode(responses.NewPointResponse(point))
+		json.NewEncoder(w).Encode(pointResponse)
 	}
 }
 
@@ -75,7 +73,7 @@ func GetNearestPointsHandler(s *services.PointService) http.HandlerFunc {
 			return
 		}
 
-		points, err := s.GetNearest(*nearestPointsRequest)
+		points, err := s.GetNearest(nearestPointsRequest)
 		if err != nil {
 			utils.JSONError(w, "An error occurred while getting nearest points list", err.Error(), http.StatusBadRequest)
 			return
@@ -97,15 +95,13 @@ func CreatePoint(s *services.PointService) http.HandlerFunc {
 			return
 		}
 
-		pointDomain := domain.NewPoint(pointRequest)
-
-		err = s.Create(pointDomain)
+		id, err := s.Create(pointRequest)
 		if err != nil {
 			utils.JSONError(w, "An error accurred while creating the point", err.Error(), http.StatusInternalServerError)
 			return
 		}
 
-		w.Header().Set("Location", fmt.Sprintf("/api/points/%d", pointDomain.ID))
+		w.Header().Set("Location", fmt.Sprintf("/api/points/%d", id))
 		w.WriteHeader(http.StatusCreated)
 	}
 }

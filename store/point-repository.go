@@ -4,8 +4,7 @@ import (
 	"database/sql"
 
 	"github.com/StenvL/interest-points-api/models/domain"
-	"github.com/StenvL/interest-points-api/models/requests"
-	"github.com/StenvL/interest-points-api/models/responses"
+	"github.com/StenvL/interest-points-api/models/domain/queries"
 )
 
 //PointRepository repository for working with points
@@ -43,7 +42,9 @@ func (r *PointRepository) Create(point *domain.Point) error {
 //GetAllByCity returns all points by city
 func (r *PointRepository) GetAllByCity(cityID uint64) ([]*domain.Point, error) {
 	rows, err := r.store.db.Query(
-		"SELECT p.id, p.name, p.description, p.lon, p.lat, pt.id, pt.name, c.id, c.name FROM point p JOIN point_type pt ON p.type_id = pt.id JOIN city c ON p.city_id = c.id where c.id = ?",
+		"SELECT p.id, p.name, p.description, p.lon, p.lat, pt.id, pt.name, c.id, c.name "+
+			"FROM point p JOIN point_type pt ON p.type_id = pt.id JOIN city c ON p.city_id = c.id "+
+			"WHERE c.id = ?",
 		cityID,
 	)
 
@@ -69,7 +70,7 @@ func (r *PointRepository) GetAllByCity(cityID uint64) ([]*domain.Point, error) {
 }
 
 //GetNearest returns nearest points by radius
-func (r *PointRepository) GetNearest(request requests.NearestPointsRequest) ([]*responses.PointDistanceResponse, error) {
+func (r *PointRepository) GetNearest(request queries.NearestPointsQuery) ([]*domain.Point, error) {
 	rows, err := r.store.db.Query(
 		"SELECT p.id, p.name, p.description, p.lon, p.lat, pt.id, pt.name, c.id, c.name, get_distance(?, ?, p.lon, p.lat) as distance "+
 			"FROM point p JOIN point_type pt ON p.type_id = pt.id JOIN city c ON p.city_id = c.id "+
@@ -85,9 +86,9 @@ func (r *PointRepository) GetNearest(request requests.NearestPointsRequest) ([]*
 
 	defer rows.Close()
 
-	points := make([]*responses.PointDistanceResponse, 0)
+	points := make([]*domain.Point, 0)
 	for rows.Next() {
-		point := responses.NewPointDistanceResponse()
+		point := domain.NewEmptyPoint()
 		err := rows.Scan(&point.ID, &point.Name, &point.Description, &point.Lon, &point.Lat, &point.Type.ID, &point.Type.Name, &point.City.ID, &point.City.Name, &point.Distance)
 
 		if err != nil {
@@ -105,9 +106,9 @@ func (r *PointRepository) GetByID(id uint64) (*domain.Point, error) {
 	point := domain.NewEmptyPoint()
 
 	err := r.store.db.QueryRow(
-		"SELECT p.name, p.description, p.lon, p.lat, pt.id, pt.name, c.id, c.name FROM point p JOIN point_type pt ON p.type_id = pt.id JOIN city c ON p.city_id = c.id WHERE p.id = ?;",
+		"SELECT p.id, p.name, p.description, p.lon, p.lat, pt.id, pt.name, c.id, c.name FROM point p JOIN point_type pt ON p.type_id = pt.id JOIN city c ON p.city_id = c.id WHERE p.id = ?;",
 		id,
-	).Scan(&point.Name, &point.Description, &point.Lon, &point.Lat, &point.Type.ID, &point.Type.Name, &point.City.ID, &point.City.Name)
+	).Scan(&point.ID, &point.Name, &point.Description, &point.Lon, &point.Lat, &point.Type.ID, &point.Type.Name, &point.City.ID, &point.City.Name)
 
 	if err == sql.ErrNoRows {
 		return nil, nil

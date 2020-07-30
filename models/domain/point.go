@@ -11,6 +11,7 @@ type Point struct {
 	City        *City
 	Lon         float32
 	Lat         float32
+	Distance    uint64
 }
 
 //NewEmptyPoint creates empty point

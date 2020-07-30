@@ -2,6 +2,7 @@ package services
 
 import (
 	"github.com/StenvL/interest-points-api/models/domain"
+	"github.com/StenvL/interest-points-api/models/domain/queries"
 	"github.com/StenvL/interest-points-api/models/requests"
 	"github.com/StenvL/interest-points-api/models/responses"
 	"github.com/StenvL/interest-points-api/store"
@@ -20,35 +21,39 @@ func NewPointService(store *store.Store) *PointService {
 }
 
 //GetAllByCity returns all points by city
-func (p *PointService) GetAllByCity(cityID uint64) ([]*domain.Point, error) {
+func (p *PointService) GetAllByCity(cityID uint64) ([]*responses.PointResponse, error) {
 	points, err := p.store.Point().GetAllByCity(cityID)
 
 	if err != nil {
 		return nil, err
 	}
 
-	return points, nil
+	pointsResponse := make([]*responses.PointResponse, 0)
+	for _, point := range points {
+		pointsResponse = append(pointsResponse, responses.NewPointResponse(point))
+	}
+
+	return pointsResponse, nil
 }
 
 //GetNearest returns nearest points by radius
-func (p *PointService) GetNearest(r requests.NearestPointsRequest) ([]*responses.PointDistanceResponse, error) {
-	const walkSpeed, minutesInHour = 5, 60
-
-	points, err := p.store.Point().GetNearest(r)
+func (p *PointService) GetNearest(r *requests.NearestPointsRequest) ([]*responses.PointDistanceResponse, error) {
+	points, err := p.store.Point().GetNearest(queries.NewNearestPointsQuery(r))
 
 	if err != nil {
 		return nil, err
 	}
 
+	pointsResponse := make([]*responses.PointDistanceResponse, 0)
 	for _, point := range points {
-		point.WalkTime = float32(point.Distance) / float32(walkSpeed) * minutesInHour
+		pointsResponse = append(pointsResponse, responses.NewPointDistanceResponse(point))
 	}
 
-	return points, nil
+	return pointsResponse, nil
 }
 
 //GetByID returns point by its identifier
-func (p *PointService) GetByID(id uint64) (*domain.Point, error) {
+func (p *PointService) GetByID(id uint64) (*responses.PointResponse, error) {
 	point, err := p.store.Point().GetByID(id)
 
 	if err != nil {
@@ -59,16 +64,18 @@ func (p *PointService) GetByID(id uint64) (*domain.Point, error) {
 		return nil, nil
 	}
 
-	return point, nil
+	return responses.NewPointResponse(point), nil
 }
 
 //Create new point
-func (p *PointService) Create(point *domain.Point) error {
-	err := p.store.Point().Create(point)
+func (p *PointService) Create(r *requests.PointRequest) (*uint64, error) {
+	pointDomain := domain.NewPoint(r)
+
+	err := p.store.Point().Create(pointDomain)
 
 	if err != nil {
-		return err
+		return nil, err
 	}
 
-	return nil
+	return &pointDomain.ID, nil
 }
