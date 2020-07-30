@@ -23,13 +23,13 @@ func NewEmptyPoint() *Point {
 }
 
 //NewPoint creates point from request model
-func NewPoint(pointRequest *requests.PointRequest) *Point {
+func NewPoint(pointRequestBody *requests.PointRequestBody) *Point {
 	return &Point{
-		Name:        pointRequest.Name,
-		Description: pointRequest.Description,
-		Type:        &PointType{ID: pointRequest.TypeID},
-		City:        &City{ID: pointRequest.CityID},
-		Lon:         pointRequest.Lon,
-		Lat:         pointRequest.Lat,
+		Name:        pointRequestBody.Name,
+		Description: pointRequestBody.Description,
+		Type:        &PointType{ID: pointRequestBody.TypeID},
+		City:        &City{ID: pointRequestBody.CityID},
+		Lon:         pointRequestBody.Lon,
+		Lat:         pointRequestBody.Lat,
 	}
 }

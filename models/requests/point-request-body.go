@@ -1,7 +1,7 @@
 package requests
 
-//PointRequest request model
-type PointRequest struct {
+//PointRequestBody request body for creating and editing point
+type PointRequestBody struct {
 	Name        string  `json:"name"`
 	Description string  `json:"description"`
 	TypeID      uint64  `json:"typeId"`

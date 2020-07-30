@@ -7,13 +7,14 @@ import (
 
 //NearestPointsRequest struct to store request for getting nearest points
 type NearestPointsRequest struct {
+	*PaginationRequest
 	Radius uint64
 	Lon    float64
 	Lat    float64
 }
 
 //NewNearestPointsRequest creates request struct by string params
-func NewNearestPointsRequest(lonParam string, latParam string, radiusParam string) (*NearestPointsRequest, error) {
+func NewNearestPointsRequest(lonParam string, latParam string, radiusParam string, limit string, offset string) (*NearestPointsRequest, error) {
 	if len(lonParam) == 0 || len(latParam) == 0 {
 		return nil, errors.New("Coordinates must be present")
 	}
@@ -43,9 +44,17 @@ func NewNearestPointsRequest(lonParam string, latParam string, radiusParam strin
 		}
 	}
 
+	var p *PaginationRequest
+
+	p, err = NewPaginationRequest(limit, offset, 5, 0)
+	if err != nil {
+		return nil, errors.New("Failed to create pagination request")
+	}
+
 	return &NearestPointsRequest{
-		Radius: radius,
-		Lon:    lon,
-		Lat:    lat,
+		Radius:            radius,
+		Lon:               lon,
+		Lat:               lat,
+		PaginationRequest: p,
 	}, nil
 }

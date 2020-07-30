@@ -21,8 +21,8 @@ func NewPointService(store *store.Store) *PointService {
 }
 
 //GetAllByCity returns all points by city
-func (p *PointService) GetAllByCity(cityID uint64) ([]*responses.PointResponse, error) {
-	points, err := p.store.Point().GetAllByCity(cityID)
+func (p *PointService) GetAllByCity(r *requests.PointsRequest) ([]*responses.PointResponse, error) {
+	points, err := p.store.Point().GetAllByCity(queries.NewPointsQuery(r))
 
 	if err != nil {
 		return nil, err
@@ -68,7 +68,7 @@ func (p *PointService) GetByID(id uint64) (*responses.PointResponse, error) {
 }
 
 //Create new point
-func (p *PointService) Create(r *requests.PointRequest) (uint64, error) {
+func (p *PointService) Create(r *requests.PointRequestBody) (uint64, error) {
 	pointDomain := domain.NewPoint(r)
 
 	err := p.store.Point().Create(pointDomain)
@@ -81,7 +81,7 @@ func (p *PointService) Create(r *requests.PointRequest) (uint64, error) {
 }
 
 //Update existent point
-func (p *PointService) Update(id uint64, r *requests.PointRequest) (*responses.PointResponse, error) {
+func (p *PointService) Update(id uint64, r *requests.PointRequestBody) (*responses.PointResponse, error) {
 	pointDomain := domain.NewPoint(r)
 	pointDomain.ID = id
 

@@ -3,6 +3,7 @@ package controllers
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 	"strconv"
 
@@ -16,20 +17,16 @@ import (
 //GetPointsByCityHandler returns all points by city
 func GetPointsByCityHandler(s *services.PointService) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		cityIDParam := r.URL.Query().Get("city")
+		query := r.URL.Query()
 
-		if len(cityIDParam) == 0 {
-			utils.JSONError(w, "City param must be present", "", http.StatusBadRequest)
-			return
-		}
+		pointsRequest, err := requests.NewPointsRequest(query.Get("city"), query.Get("limit"), query.Get("offset"))
 
-		cityID, err := strconv.ParseUint(cityIDParam, 10, 32)
 		if err != nil {
-			utils.JSONError(w, "City param is incorrect", err.Error(), http.StatusBadRequest)
+			utils.JSONError(w, "Bad request", err.Error(), http.StatusBadRequest)
 			return
 		}
-
-		points, err := s.GetAllByCity(cityID)
+		log.Println(pointsRequest.City, pointsRequest.Limit, pointsRequest.Offset)
+		points, err := s.GetAllByCity(pointsRequest)
 		if err != nil {
 			utils.JSONError(w, "An error occurred while getting points list", err.Error(), http.StatusBadRequest)
 			return
@@ -66,7 +63,9 @@ func GetNearestPointsHandler(s *services.PointService) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		query := r.URL.Query()
 
-		nearestPointsRequest, err := requests.NewNearestPointsRequest(query.Get("lon"), query.Get("lat"), query.Get("radius"))
+		nearestPointsRequest, err :=
+			requests.NewNearestPointsRequest(
+				query.Get("lon"), query.Get("lat"), query.Get("radius"), query.Get("limit"), query.Get("offset"))
 
 		if err != nil {
 			utils.JSONError(w, "Bad request", err.Error(), http.StatusBadRequest)
@@ -87,15 +86,15 @@ func GetNearestPointsHandler(s *services.PointService) http.HandlerFunc {
 //CreatePoint creates new point
 func CreatePoint(s *services.PointService) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		var pointRequest *requests.PointRequest
+		var pointRequestBody *requests.PointRequestBody
 
-		err := json.NewDecoder(r.Body).Decode(&pointRequest)
+		err := json.NewDecoder(r.Body).Decode(&pointRequestBody)
 		if err != nil {
 			utils.JSONError(w, "Request body is incorrect", err.Error(), http.StatusBadRequest)
 			return
 		}
 
-		id, err := s.Create(pointRequest)
+		id, err := s.Create(pointRequestBody)
 		if err != nil {
 			utils.JSONError(w, "An error accurred while creating the point", err.Error(), http.StatusInternalServerError)
 			return
@@ -115,14 +114,14 @@ func EditPoint(s *services.PointService) http.HandlerFunc {
 			return
 		}
 
-		var pointRequest *requests.PointRequest
-		err = json.NewDecoder(r.Body).Decode(&pointRequest)
+		var pointRequestBody *requests.PointRequestBody
+		err = json.NewDecoder(r.Body).Decode(&pointRequestBody)
 		if err != nil {
 			utils.JSONError(w, "Request body is incorrect", err.Error(), http.StatusBadRequest)
 			return
 		}
 
-		pointResponse, err := s.Update(id, pointRequest)
+		pointResponse, err := s.Update(id, pointRequestBody)
 		if err != nil {
 			utils.JSONError(w, "An error accurred while updating the point", err.Error(), http.StatusInternalServerError)
 			return

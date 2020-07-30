@@ -71,12 +71,15 @@ func (r *PointRepository) Update(point *domain.Point) (*domain.Point, error) {
 }
 
 //GetAllByCity returns all points by city
-func (r *PointRepository) GetAllByCity(cityID uint64) ([]*domain.Point, error) {
+func (r *PointRepository) GetAllByCity(q queries.PointsQuery) ([]*domain.Point, error) {
 	rows, err := r.store.db.Query(
 		"SELECT p.id, p.name, p.description, p.lon, p.lat, pt.id, pt.name, c.id, c.name "+
 			"FROM point p JOIN point_type pt ON p.type_id = pt.id JOIN city c ON p.city_id = c.id "+
-			"WHERE c.id = ?",
-		cityID,
+			"WHERE c.id = ? "+
+			"LIMIT ? OFFSET ?",
+		q.City,
+		q.Limit,
+		q.Offset,
 	)
 
 	if err != nil {
@@ -101,14 +104,17 @@ func (r *PointRepository) GetAllByCity(cityID uint64) ([]*domain.Point, error) {
 }
 
 //GetNearest returns nearest points by radius
-func (r *PointRepository) GetNearest(request queries.NearestPointsQuery) ([]*domain.Point, error) {
+func (r *PointRepository) GetNearest(q queries.NearestPointsQuery) ([]*domain.Point, error) {
 	rows, err := r.store.db.Query(
 		"SELECT p.id, p.name, p.description, p.lon, p.lat, pt.id, pt.name, c.id, c.name, get_distance(?, ?, p.lon, p.lat) as distance "+
 			"FROM point p JOIN point_type pt ON p.type_id = pt.id JOIN city c ON p.city_id = c.id "+
-			"HAVING distance <= ?",
-		request.Lon,
-		request.Lat,
-		request.Radius,
+			"HAVING distance <= ? "+
+			"LIMIT ? OFFSET ?",
+		q.Lon,
+		q.Lat,
+		q.Radius,
+		q.Limit,
+		q.Offset,
 	)
 
 	if err != nil {
