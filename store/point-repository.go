@@ -4,6 +4,8 @@ import (
 	"database/sql"
 
 	"github.com/StenvL/interest-points-api/models/domain"
+	"github.com/StenvL/interest-points-api/models/requests"
+	"github.com/StenvL/interest-points-api/models/responses"
 )
 
 //PointRepository repository for working with points
@@ -55,6 +57,38 @@ func (r *PointRepository) GetAllByCity(cityID uint64) ([]*domain.Point, error) {
 	for rows.Next() {
 		point := domain.NewEmptyPoint()
 		err := rows.Scan(&point.ID, &point.Name, &point.Description, &point.Lon, &point.Lat, &point.Type.ID, &point.Type.Name, &point.City.ID, &point.City.Name)
+
+		if err != nil {
+			return nil, err
+		}
+
+		points = append(points, point)
+	}
+
+	return points, nil
+}
+
+//GetNearest returns nearest points by radius
+func (r *PointRepository) GetNearest(request requests.NearestPointsRequest) ([]*responses.PointDistanceResponse, error) {
+	rows, err := r.store.db.Query(
+		"SELECT p.id, p.name, p.description, p.lon, p.lat, pt.id, pt.name, c.id, c.name, get_distance(?, ?, p.lon, p.lat) as distance "+
+			"FROM point p JOIN point_type pt ON p.type_id = pt.id JOIN city c ON p.city_id = c.id "+
+			"HAVING distance <= ?",
+		request.Lon,
+		request.Lat,
+		request.Radius,
+	)
+
+	if err != nil {
+		return nil, err
+	}
+
+	defer rows.Close()
+
+	points := make([]*responses.PointDistanceResponse, 0)
+	for rows.Next() {
+		point := responses.NewPointDistanceResponse()
+		err := rows.Scan(&point.ID, &point.Name, &point.Description, &point.Lon, &point.Lat, &point.Type.ID, &point.Type.Name, &point.City.ID, &point.City.Name, &point.Distance)
 
 		if err != nil {
 			return nil, err

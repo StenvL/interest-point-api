@@ -2,6 +2,8 @@ package services
 
 import (
 	"github.com/StenvL/interest-points-api/models/domain"
+	"github.com/StenvL/interest-points-api/models/requests"
+	"github.com/StenvL/interest-points-api/models/responses"
 	"github.com/StenvL/interest-points-api/store"
 )
 
@@ -23,6 +25,23 @@ func (p *PointService) GetAllByCity(cityID uint64) ([]*domain.Point, error) {
 
 	if err != nil {
 		return nil, err
+	}
+
+	return points, nil
+}
+
+//GetNearest returns nearest points by radius
+func (p *PointService) GetNearest(r requests.NearestPointsRequest) ([]*responses.PointDistanceResponse, error) {
+	const walkSpeed, minutesInHour = 5, 60
+
+	points, err := p.store.Point().GetNearest(r)
+
+	if err != nil {
+		return nil, err
+	}
+
+	for _, point := range points {
+		point.WalkTime = float32(point.Distance) / float32(walkSpeed) * minutesInHour
 	}
 
 	return points, nil

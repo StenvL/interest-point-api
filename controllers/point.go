@@ -63,12 +63,26 @@ func GetPointByIDHandler(s *services.PointService) http.HandlerFunc {
 	}
 }
 
-//GetClosestPointsHandler returns nearest points
-func GetClosestPointsHandler(s *services.PointService) http.HandlerFunc {
+//GetNearestPointsHandler returns nearest points
+func GetNearestPointsHandler(s *services.PointService) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		temp := []int{1, 2, 3}
+		query := r.URL.Query()
+
+		nearestPointsRequest, err := requests.NewNearestPointsRequest(query.Get("lon"), query.Get("lat"), query.Get("radius"))
+
+		if err != nil {
+			utils.JSONError(w, "Bad request", err.Error(), http.StatusBadRequest)
+			return
+		}
+
+		points, err := s.GetNearest(*nearestPointsRequest)
+		if err != nil {
+			utils.JSONError(w, "An error occurred while getting nearest points list", err.Error(), http.StatusBadRequest)
+			return
+		}
+
 		w.Header().Set("Content-Type", "application/json")
-		json.NewEncoder(w).Encode(temp)
+		json.NewEncoder(w).Encode(points)
 	}
 }
 
