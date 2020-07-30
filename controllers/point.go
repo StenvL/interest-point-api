@@ -109,8 +109,26 @@ func CreatePoint(s *services.PointService) http.HandlerFunc {
 //EditPoint edites existing point
 func EditPoint(s *services.PointService) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		temp := []int{1, 2, 3}
+		id, err := strconv.ParseUint(mux.Vars(r)["id"], 10, 32)
+		if err != nil {
+			utils.JSONError(w, "Point ID is incorrect", err.Error(), http.StatusBadRequest)
+			return
+		}
+
+		var pointRequest *requests.PointRequest
+		err = json.NewDecoder(r.Body).Decode(&pointRequest)
+		if err != nil {
+			utils.JSONError(w, "Request body is incorrect", err.Error(), http.StatusBadRequest)
+			return
+		}
+
+		pointResponse, err := s.Update(id, pointRequest)
+		if err != nil {
+			utils.JSONError(w, "An error accurred while updating the point", err.Error(), http.StatusInternalServerError)
+			return
+		}
+
 		w.Header().Set("Content-Type", "application/json")
-		json.NewEncoder(w).Encode(temp)
+		json.NewEncoder(w).Encode(pointResponse)
 	}
 }

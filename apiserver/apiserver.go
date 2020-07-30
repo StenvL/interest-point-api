@@ -57,6 +57,6 @@ func (s *APIServer) configurateRouter() {
 	s.router.HandleFunc("/api/points", controllers.GetPointsByCityHandler(pointService)).Methods("GET")
 	s.router.HandleFunc("/api/points/{id}", controllers.GetPointByIDHandler(pointService)).Methods("GET")
 	s.router.HandleFunc("/api/points", controllers.CreatePoint(pointService)).Methods("POST")
-	s.router.HandleFunc("/api/points", controllers.EditPoint(pointService)).Methods("PUT")
+	s.router.HandleFunc("/api/points/{id}", controllers.EditPoint(pointService)).Methods("PUT")
 	s.router.HandleFunc("/api/nearest-points", controllers.GetNearestPointsHandler(pointService)).Methods("GET")
 }

@@ -2,6 +2,7 @@ package store
 
 import (
 	"database/sql"
+	"fmt"
 
 	"github.com/StenvL/interest-points-api/models/domain"
 	"github.com/StenvL/interest-points-api/models/domain/queries"
@@ -37,6 +38,36 @@ func (r *PointRepository) Create(point *domain.Point) error {
 	point.ID = uint64(id)
 
 	return nil
+}
+
+//Update existent point
+func (r *PointRepository) Update(point *domain.Point) (*domain.Point, error) {
+	_, err := r.store.db.Exec(
+		"UPDATE point SET name = ?, description = ?, type_id = ?, city_id = ?, lon = ?, lat = ? WHERE ID = ?",
+		point.Name,
+		point.Description,
+		point.Type.ID,
+		point.City.ID,
+		point.Lon,
+		point.Lat,
+		point.ID,
+	)
+
+	if err != nil {
+		return nil, err
+	}
+
+	updatedPoint, err := r.GetByID(point.ID)
+
+	if err != nil {
+		return nil, err
+	}
+
+	if updatedPoint == nil {
+		return nil, fmt.Errorf("Point with ID %d does not exists", point.ID)
+	}
+
+	return updatedPoint, nil
 }
 
 //GetAllByCity returns all points by city

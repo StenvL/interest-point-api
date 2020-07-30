@@ -68,14 +68,28 @@ func (p *PointService) GetByID(id uint64) (*responses.PointResponse, error) {
 }
 
 //Create new point
-func (p *PointService) Create(r *requests.PointRequest) (*uint64, error) {
+func (p *PointService) Create(r *requests.PointRequest) (uint64, error) {
 	pointDomain := domain.NewPoint(r)
 
 	err := p.store.Point().Create(pointDomain)
 
 	if err != nil {
+		return 0, err
+	}
+
+	return pointDomain.ID, nil
+}
+
+//Update existent point
+func (p *PointService) Update(id uint64, r *requests.PointRequest) (*responses.PointResponse, error) {
+	pointDomain := domain.NewPoint(r)
+	pointDomain.ID = id
+
+	pointDomain, err := p.store.Point().Update(pointDomain)
+
+	if err != nil {
 		return nil, err
 	}
 
-	return &pointDomain.ID, nil
+	return responses.NewPointResponse(pointDomain), nil
 }
