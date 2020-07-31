@@ -5,7 +5,7 @@ import (
 	"strconv"
 )
 
-//NearestPointsRequest struct to store request for getting nearest points
+//NearestPointsRequest struct to make request for getting nearest points
 type NearestPointsRequest struct {
 	*PaginationRequest
 	Radius uint64

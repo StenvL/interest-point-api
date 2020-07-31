@@ -3,7 +3,6 @@ package controllers
 import (
 	"encoding/json"
 	"fmt"
-	"log"
 	"net/http"
 	"strconv"
 
@@ -25,7 +24,7 @@ func GetPointsByCityHandler(s *services.PointService) http.HandlerFunc {
 			utils.JSONError(w, "Bad request", err.Error(), http.StatusBadRequest)
 			return
 		}
-		log.Println(pointsRequest.City, pointsRequest.Limit, pointsRequest.Offset)
+
 		points, err := s.GetAllByCity(pointsRequest)
 		if err != nil {
 			utils.JSONError(w, "An error occurred while getting points list", err.Error(), http.StatusBadRequest)
