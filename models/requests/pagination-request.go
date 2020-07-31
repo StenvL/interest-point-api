@@ -5,13 +5,13 @@ import (
 	"strconv"
 )
 
-//PaginationRequest struct to make request for getting paginated data
+// PaginationRequest is a struct to make request for getting paginated data.
 type PaginationRequest struct {
 	Limit  uint64
 	Offset uint64
 }
 
-//NewPaginationRequest creates pagination request by string params
+// NewPaginationRequest creates PaginationRequest struct by string params.
 func NewPaginationRequest(limitParam string, offsetParam string, defaultLimit uint64, defaultOffset uint64) (*PaginationRequest, error) {
 	var limit, offset uint64
 	var err error

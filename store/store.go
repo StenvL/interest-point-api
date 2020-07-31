@@ -6,21 +6,21 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
-//Store type provides functionality to work with storage
+// Store is a struct that stores data to work with storage.
 type Store struct {
 	config          *Config
 	db              *sql.DB
 	pointRepository *PointRepository
 }
 
-//New creates new store
+// New creates new store.
 func New(config *Config) *Store {
 	return &Store{
 		config: config,
 	}
 }
 
-//Open opens connection with database
+// Open opens connection with database.
 func (store *Store) Open() error {
 	db, err := sql.Open("mysql", store.config.DatabaseURL)
 	if err != nil {
@@ -36,17 +36,17 @@ func (store *Store) Open() error {
 	return nil
 }
 
-//Ping checks connection to database
+// Ping checks connection to database.
 func (store *Store) Ping() error {
 	return store.db.Ping()
 }
 
-//Close closes connection with database
+// Close closes connection with database.
 func (store *Store) Close() {
 	store.db.Close()
 }
 
-//Point entrypoint to work with point repository
+// Point entrypoint to work with point repository.
 func (store *Store) Point() *PointRepository {
 	if store.pointRepository != nil {
 		return store.pointRepository

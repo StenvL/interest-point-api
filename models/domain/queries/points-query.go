@@ -4,13 +4,13 @@ import (
 	"github.com/StenvL/interest-points-api/models/requests"
 )
 
-//PointsQuery struct for getting points by query
+// PointsQuery is a struct for getting points by query.
 type PointsQuery struct {
 	City uint64
 	PaginationQuery
 }
 
-//NewPointsQuery creates NewPointsQuery entity from request entity
+// NewPointsQuery creates NewPointsQuery entity from request entity.
 func NewPointsQuery(r *requests.PointsRequest) PointsQuery {
 	return PointsQuery{
 		City:            r.City,

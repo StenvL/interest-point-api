@@ -6,7 +6,7 @@ import (
 	"github.com/StenvL/interest-points-api/store"
 )
 
-//Config type for configuring API service
+// Config type for configuring API service.
 type Config struct {
 	BindAddr           string   `toml:"bind_addr"`
 	CorsAllowedOrigins []string `toml:"cors_allowed_origins"`
@@ -15,7 +15,7 @@ type Config struct {
 	Store              *store.Config
 }
 
-//NewConfig creates default config
+// NewConfig creates config with default values.
 func NewConfig() *Config {
 	return &Config{
 		BindAddr:           ":8080",

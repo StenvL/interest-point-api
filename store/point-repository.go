@@ -8,12 +8,12 @@ import (
 	"github.com/StenvL/interest-points-api/models/domain/queries"
 )
 
-//PointRepository repository for working with points
+// PointRepository repository for working with points.
 type PointRepository struct {
 	store *Store
 }
 
-//Create new point
+// Create creates new point.
 func (r *PointRepository) Create(point *domain.Point) error {
 	res, err := r.store.db.Exec(
 		"INSERT INTO point (name, description, type_id, city_id, lon, lat) VALUES (?, ?, ?, ?, ?, ?);",
@@ -40,7 +40,7 @@ func (r *PointRepository) Create(point *domain.Point) error {
 	return nil
 }
 
-//Update existent point
+// Update updates existent point.
 func (r *PointRepository) Update(point *domain.Point) (*domain.Point, error) {
 	_, err := r.store.db.Exec(
 		"UPDATE point SET name = ?, description = ?, type_id = ?, city_id = ?, lon = ?, lat = ? WHERE ID = ?",
@@ -70,7 +70,7 @@ func (r *PointRepository) Update(point *domain.Point) (*domain.Point, error) {
 	return updatedPoint, nil
 }
 
-//GetAllByCity returns all points by city
+// GetAllByCity returns all points by city.
 func (r *PointRepository) GetAllByCity(q queries.PointsQuery) ([]*domain.Point, error) {
 	rows, err := r.store.db.Query(
 		"SELECT p.id, p.name, p.description, p.lon, p.lat, pt.id, pt.name, c.id, c.name "+
@@ -103,7 +103,7 @@ func (r *PointRepository) GetAllByCity(q queries.PointsQuery) ([]*domain.Point, 
 	return points, nil
 }
 
-//GetNearest returns nearest points by radius
+// GetNearest returns nearest points by radius and coordinates.
 func (r *PointRepository) GetNearest(q queries.NearestPointsQuery) ([]*domain.Point, error) {
 	rows, err := r.store.db.Query(
 		"SELECT p.id, p.name, p.description, p.lon, p.lat, pt.id, pt.name, c.id, c.name, get_distance(?, ?, p.lon, p.lat) as distance "+
@@ -138,7 +138,7 @@ func (r *PointRepository) GetNearest(q queries.NearestPointsQuery) ([]*domain.Po
 	return points, nil
 }
 
-//GetByID returns the point by its identifier
+// GetByID returns the point by its identifier.
 func (r *PointRepository) GetByID(id uint64) (*domain.Point, error) {
 	point := domain.NewEmptyPoint()
 

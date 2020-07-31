@@ -13,7 +13,7 @@ import (
 	"github.com/StenvL/interest-points-api/utils"
 )
 
-//GetPointsByCityHandler returns all points by city
+// GetPointsByCityHandler returns all points by city.
 func GetPointsByCityHandler(s *services.PointService) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		query := r.URL.Query()
@@ -36,7 +36,7 @@ func GetPointsByCityHandler(s *services.PointService) http.HandlerFunc {
 	}
 }
 
-//GetPointByIDHandler returns point by its identifier
+// GetPointByIDHandler returns point by its identifier.
 func GetPointByIDHandler(s *services.PointService) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		id, err := strconv.ParseUint(mux.Vars(r)["id"], 10, 32)
@@ -57,7 +57,7 @@ func GetPointByIDHandler(s *services.PointService) http.HandlerFunc {
 	}
 }
 
-//GetNearestPointsHandler returns nearest points
+// GetNearestPointsHandler returns nearest points by radius and coordinates.
 func GetNearestPointsHandler(s *services.PointService) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		query := r.URL.Query()
@@ -82,7 +82,7 @@ func GetNearestPointsHandler(s *services.PointService) http.HandlerFunc {
 	}
 }
 
-//CreatePoint creates new point
+// CreatePoint creates new point.
 func CreatePoint(s *services.PointService) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var pointRequestBody *requests.PointRequestBody
@@ -104,7 +104,7 @@ func CreatePoint(s *services.PointService) http.HandlerFunc {
 	}
 }
 
-//EditPoint edites existing point
+// EditPoint edites existing point.
 func EditPoint(s *services.PointService) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		id, err := strconv.ParseUint(mux.Vars(r)["id"], 10, 32)

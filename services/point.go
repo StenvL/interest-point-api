@@ -8,19 +8,19 @@ import (
 	"github.com/StenvL/interest-points-api/store"
 )
 
-//PointService service that provides methods to work with point entity
+// PointService service that provides methods to work with point entity.
 type PointService struct {
 	store *store.Store
 }
 
-//NewPointService creates an instance of PointService
+// NewPointService creates an instance of PointService.
 func NewPointService(store *store.Store) *PointService {
 	return &PointService{
 		store: store,
 	}
 }
 
-//GetAllByCity returns all points by city
+// GetAllByCity returns all points by city.
 func (p *PointService) GetAllByCity(r *requests.PointsRequest) ([]*responses.PointResponse, error) {
 	points, err := p.store.Point().GetAllByCity(queries.NewPointsQuery(r))
 
@@ -36,7 +36,7 @@ func (p *PointService) GetAllByCity(r *requests.PointsRequest) ([]*responses.Poi
 	return pointsResponse, nil
 }
 
-//GetNearest returns nearest points by radius
+// GetNearest returns nearest points by radius.
 func (p *PointService) GetNearest(r *requests.NearestPointsRequest) ([]*responses.PointDistanceResponse, error) {
 	points, err := p.store.Point().GetNearest(queries.NewNearestPointsQuery(r))
 
@@ -52,7 +52,7 @@ func (p *PointService) GetNearest(r *requests.NearestPointsRequest) ([]*response
 	return pointsResponse, nil
 }
 
-//GetByID returns point by its identifier
+// GetByID returns point by its identifier.
 func (p *PointService) GetByID(id uint64) (*responses.PointResponse, error) {
 	point, err := p.store.Point().GetByID(id)
 
@@ -67,7 +67,7 @@ func (p *PointService) GetByID(id uint64) (*responses.PointResponse, error) {
 	return responses.NewPointResponse(point), nil
 }
 
-//Create new point
+// Create crates new point.
 func (p *PointService) Create(r *requests.PointRequestBody) (uint64, error) {
 	pointDomain := domain.NewPoint(r)
 
@@ -80,7 +80,7 @@ func (p *PointService) Create(r *requests.PointRequestBody) (uint64, error) {
 	return pointDomain.ID, nil
 }
 
-//Update existent point
+// Update updates existent point.
 func (p *PointService) Update(id uint64, r *requests.PointRequestBody) (*responses.PointResponse, error) {
 	pointDomain := domain.NewPoint(r)
 	pointDomain.ID = id

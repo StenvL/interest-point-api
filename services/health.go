@@ -5,19 +5,19 @@ import (
 	"github.com/StenvL/interest-points-api/store"
 )
 
-//HealthService service to check api server health
+// HealthService service to check API server health.
 type HealthService struct {
 	store *store.Store
 }
 
-//NewHealthService creates an instance of HealthService
+// NewHealthService creates an instance of HealthService.
 func NewHealthService(store *store.Store) *HealthService {
 	return &HealthService{
 		store: store,
 	}
 }
 
-//GetHealthStatus checks health status of api server
+// GetHealthStatus checks health status of API server.
 func (h *HealthService) GetHealthStatus() []*responses.ServiceStatusResponse {
 	storeStatus := &responses.ServiceStatusResponse{
 		Name:    "Store",

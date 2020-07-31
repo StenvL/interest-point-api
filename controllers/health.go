@@ -7,7 +7,7 @@ import (
 	"github.com/StenvL/interest-points-api/services"
 )
 
-//CheckHealth checks application services health
+// CheckHealth checks application services health.
 func CheckHealth(h *services.HealthService) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")

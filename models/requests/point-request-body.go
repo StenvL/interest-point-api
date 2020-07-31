@@ -1,6 +1,6 @@
 package requests
 
-//PointRequestBody request body for creating and editing point
+// PointRequestBody request body for creating and editing point.
 type PointRequestBody struct {
 	Name        string  `json:"name"`
 	Description string  `json:"description"`

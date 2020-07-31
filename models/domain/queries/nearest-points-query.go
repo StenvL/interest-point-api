@@ -4,7 +4,7 @@ import (
 	"github.com/StenvL/interest-points-api/models/requests"
 )
 
-//NearestPointsQuery struct to for getting nearest points
+// NearestPointsQuery struct for getting nearest points.
 type NearestPointsQuery struct {
 	Radius uint64
 	Lon    float64
@@ -12,7 +12,7 @@ type NearestPointsQuery struct {
 	PaginationQuery
 }
 
-//NewNearestPointsQuery creates NearestPointsQuery entity from request entity
+// NewNearestPointsQuery creates NearestPointsQuery entity from request entity.
 func NewNearestPointsQuery(r *requests.NearestPointsRequest) NearestPointsQuery {
 	return NearestPointsQuery{
 		Radius:          r.Radius,

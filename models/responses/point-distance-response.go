@@ -4,7 +4,7 @@ import (
 	"github.com/StenvL/interest-points-api/models/domain"
 )
 
-//PointDistanceResponse response model
+// PointDistanceResponse response model.
 type PointDistanceResponse struct {
 	ID          uint64             `json:"id"`
 	Name        string             `json:"name"`
@@ -17,7 +17,7 @@ type PointDistanceResponse struct {
 	WalkTime    float32            `json:"walkTime"`
 }
 
-//NewEmptyPointDistanceResponse creates empty point distance response
+// NewEmptyPointDistanceResponse creates empty PointDistanceResponse.
 func NewEmptyPointDistanceResponse() *PointDistanceResponse {
 	return &PointDistanceResponse{
 		Type: &PointTypeResponse{},
@@ -25,7 +25,7 @@ func NewEmptyPointDistanceResponse() *PointDistanceResponse {
 	}
 }
 
-//NewPointDistanceResponse creates point distance response by point domain entity
+// NewPointDistanceResponse creates PointDistanceResponse struct by point domain entity.
 func NewPointDistanceResponse(p *domain.Point) *PointDistanceResponse {
 	const walkSpeed, minutesInHour = 5, 60
 

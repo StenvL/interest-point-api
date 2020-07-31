@@ -5,7 +5,7 @@ import (
 	"strconv"
 )
 
-//NearestPointsRequest struct to make request for getting nearest points
+// NearestPointsRequest is a struct to make request for getting nearest points.
 type NearestPointsRequest struct {
 	*PaginationRequest
 	Radius uint64
@@ -13,7 +13,7 @@ type NearestPointsRequest struct {
 	Lat    float64
 }
 
-//NewNearestPointsRequest creates request struct by string params
+// NewNearestPointsRequest creates NearestPointsRequest struct by string params.
 func NewNearestPointsRequest(lonParam string, latParam string, radiusParam string, limit string, offset string) (*NearestPointsRequest, error) {
 	if len(lonParam) == 0 || len(latParam) == 0 {
 		return nil, errors.New("Coordinates must be present")

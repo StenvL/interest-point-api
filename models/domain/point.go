@@ -2,7 +2,7 @@ package domain
 
 import "github.com/StenvL/interest-points-api/models/requests"
 
-//Point domain model
+// Point domain model.
 type Point struct {
 	ID          uint64
 	Name        string
@@ -14,7 +14,7 @@ type Point struct {
 	Distance    uint64
 }
 
-//NewEmptyPoint creates empty point
+// NewEmptyPoint creates empty point.
 func NewEmptyPoint() *Point {
 	return &Point{
 		Type: &PointType{},
@@ -22,7 +22,7 @@ func NewEmptyPoint() *Point {
 	}
 }
 
-//NewPoint creates point from request model
+// NewPoint creates point from request model.
 func NewPoint(pointRequestBody *requests.PointRequestBody) *Point {
 	return &Point{
 		Name:        pointRequestBody.Name,

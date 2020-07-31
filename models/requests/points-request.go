@@ -5,13 +5,13 @@ import (
 	"strconv"
 )
 
-//PointsRequest struct to store request for getting points index
+// PointsRequest is a struct to make request for getting points index.
 type PointsRequest struct {
 	*PaginationRequest
 	City uint64
 }
 
-//NewPointsRequest creates request struct by string params
+// NewPointsRequest creates PointsRequest struct by string params.
 func NewPointsRequest(city string, limit string, offset string) (*PointsRequest, error) {
 	if len(city) == 0 {
 		return nil, errors.New("City param must be present")

@@ -11,14 +11,14 @@ import (
 	"github.com/gorilla/mux"
 )
 
-//APIServer type for creating and configuring server for API.
+// APIServer is a type for creating and configuring server for API.
 type APIServer struct {
 	config *Config
 	router *mux.Router
 	store  *store.Store
 }
 
-//New method to create new API Server
+// New creates new API Server.
 func New(config *Config) *APIServer {
 	return &APIServer{
 		config: config,
@@ -26,7 +26,7 @@ func New(config *Config) *APIServer {
 	}
 }
 
-//Start method to start API server
+// Start starts API server.
 func (s *APIServer) Start() error {
 	if err := s.configurateStore(); err != nil {
 		return err
