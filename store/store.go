@@ -36,6 +36,11 @@ func (store *Store) Open() error {
 	return nil
 }
 
+//Ping checks connection to database
+func (store *Store) Ping() error {
+	return store.db.Ping()
+}
+
 //Close closes connection with database
 func (store *Store) Close() {
 	store.db.Close()

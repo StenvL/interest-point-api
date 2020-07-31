@@ -1,7 +1,6 @@
 package apiserver
 
 import (
-	"log"
 	"net/http"
 
 	"github.com/StenvL/interest-points-api/controllers"
@@ -52,14 +51,15 @@ func (s *APIServer) configurateStore() error {
 
 func (s *APIServer) configurateRouter() http.Handler {
 	pointService := services.NewPointService(s.store)
+	healthService := services.NewHealthService(s.store)
 
 	s.router.HandleFunc("/api/points", controllers.GetPointsByCityHandler(pointService)).Methods("GET")
 	s.router.HandleFunc("/api/points/{id}", controllers.GetPointByIDHandler(pointService)).Methods("GET")
 	s.router.HandleFunc("/api/points", controllers.CreatePoint(pointService)).Methods("POST")
 	s.router.HandleFunc("/api/points/{id}", controllers.EditPoint(pointService)).Methods("PUT")
 	s.router.HandleFunc("/api/nearest-points", controllers.GetNearestPointsHandler(pointService)).Methods("GET")
+	s.router.HandleFunc("/api/health", controllers.CheckHealth(healthService)).Methods("GET")
 
-	log.Println(s.config.CorsAllowedOrigins, s.config.CorsAllowedMethods, s.config.CorsAllowedHeaders)
 	corsOpts := cors.New(cors.Options{
 		AllowedOrigins:   s.config.CorsAllowedOrigins,
 		AllowedMethods:   s.config.CorsAllowedMethods,
