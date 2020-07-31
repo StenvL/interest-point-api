@@ -21,9 +21,12 @@ func main() {
 
 	config := apiserver.NewConfig()
 	_, err := toml.DecodeFile(configPath, config)
+
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	log.Printf("Listening on port %s", config.BindAddr)
 
 	s := apiserver.New(config)
 	if err := s.Start(); err != nil {

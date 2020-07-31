@@ -7,6 +7,7 @@ import (
 	"github.com/StenvL/interest-points-api/controllers"
 	"github.com/StenvL/interest-points-api/services"
 	"github.com/StenvL/interest-points-api/store"
+	"github.com/rs/cors"
 
 	"github.com/gorilla/mux"
 )
@@ -32,11 +33,9 @@ func (s *APIServer) Start() error {
 		return err
 	}
 
-	s.configurateRouter()
+	handler := s.configurateRouter()
 
-	log.Println("Starting API server...")
-
-	return http.ListenAndServe(s.config.BindAddr, s.router)
+	return http.ListenAndServe(s.config.BindAddr, handler)
 }
 
 func (s *APIServer) configurateStore() error {
@@ -51,7 +50,7 @@ func (s *APIServer) configurateStore() error {
 	return nil
 }
 
-func (s *APIServer) configurateRouter() {
+func (s *APIServer) configurateRouter() http.Handler {
 	pointService := services.NewPointService(s.store)
 
 	s.router.HandleFunc("/api/points", controllers.GetPointsByCityHandler(pointService)).Methods("GET")
@@ -59,4 +58,14 @@ func (s *APIServer) configurateRouter() {
 	s.router.HandleFunc("/api/points", controllers.CreatePoint(pointService)).Methods("POST")
 	s.router.HandleFunc("/api/points/{id}", controllers.EditPoint(pointService)).Methods("PUT")
 	s.router.HandleFunc("/api/nearest-points", controllers.GetNearestPointsHandler(pointService)).Methods("GET")
+
+	log.Println(s.config.CorsAllowedOrigins, s.config.CorsAllowedMethods, s.config.CorsAllowedHeaders)
+	corsOpts := cors.New(cors.Options{
+		AllowedOrigins:   s.config.CorsAllowedOrigins,
+		AllowedMethods:   s.config.CorsAllowedMethods,
+		AllowedHeaders:   s.config.CorsAllowedHeaders,
+		AllowCredentials: true,
+	})
+
+	return corsOpts.Handler(s.router)
 }
