@@ -1,0 +1,1 @@
+DELETE FROM point_type;
