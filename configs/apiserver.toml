@@ -4,4 +4,4 @@ cors_allowed_methods = [ "GET", "POST", "PUT", "OPTIONS" ]
 cors_allowed_headers = [ "X-Requested-With", "Content-Type" ]
 
 [store]
-database_url = "root:123456@tcp(docker.for.mac.localhost:3306)/interest_points"
+database_url = "root:123456@tcp(host.docker.internal:3306)/interest_points"
