@@ -11,6 +11,7 @@ type Store struct {
 	config          *Config
 	db              *sql.DB
 	pointRepository *PointRepository
+	userRepository  *UserRepository
 }
 
 // New creates new store.
@@ -53,6 +54,17 @@ func (store *Store) Point() *PointRepository {
 	}
 
 	return &PointRepository{
+		store: store,
+	}
+}
+
+// User entrypoint to work with user repository.
+func (store *Store) User() *UserRepository {
+	if store.userRepository != nil {
+		return store.userRepository
+	}
+
+	return &UserRepository{
 		store: store,
 	}
 }

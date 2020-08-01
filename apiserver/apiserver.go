@@ -52,6 +52,7 @@ func (s *APIServer) configurateStore() error {
 func (s *APIServer) configurateRouter() http.Handler {
 	pointService := services.NewPointService(s.store)
 	healthService := services.NewHealthService(s.store)
+	authService := services.NewAuthenticationService(s.store)
 
 	s.router.HandleFunc("/api/points", controllers.GetPointsByCityHandler(pointService)).Methods("GET")
 	s.router.HandleFunc("/api/points/{id}", controllers.GetPointByIDHandler(pointService)).Methods("GET")
@@ -59,6 +60,7 @@ func (s *APIServer) configurateRouter() http.Handler {
 	s.router.HandleFunc("/api/points/{id}", controllers.EditPoint(pointService)).Methods("PUT")
 	s.router.HandleFunc("/api/nearest-points", controllers.GetNearestPointsHandler(pointService)).Methods("GET")
 	s.router.HandleFunc("/api/health", controllers.CheckHealth(healthService)).Methods("GET")
+	s.router.HandleFunc("/api/authenticate", controllers.Authenticate(authService)).Methods("POST")
 
 	corsOpts := cors.New(cors.Options{
 		AllowedOrigins:   s.config.CorsAllowedOrigins,
