@@ -3,6 +3,8 @@ package services
 import (
 	"errors"
 	"fmt"
+	"strconv"
+	"time"
 
 	"github.com/StenvL/interest-points-api/models/domain"
 	"github.com/StenvL/interest-points-api/models/requests"
@@ -42,8 +44,12 @@ func (a *AuthenticationService) Authenticate(r *requests.AuthRequest) (*response
 	}
 
 	tokenData := &domain.AuthToken{
-		UserID: user.ID,
-		Login:  user.Login,
+		Name: user.Login,
+		StandardClaims: jwt.StandardClaims{
+			Subject: strconv.Itoa(int(user.ID)),
+			// Hardcodding token's lifetime is not the best way, just wanted to simplify a bit.
+			ExpiresAt: time.Now().Add(time.Hour * 1).Unix(),
+		},
 	}
 	token := jwt.NewWithClaims(jwt.GetSigningMethod("HS256"), tokenData)
 	tokenString, _ := token.SignedString([]byte("hwMAKnOG4w6FEMDCdgZv"))

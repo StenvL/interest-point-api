@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/StenvL/interest-points-api/controllers"
+	"github.com/StenvL/interest-points-api/middleware"
 	"github.com/StenvL/interest-points-api/services"
 	"github.com/StenvL/interest-points-api/store"
 	"github.com/rs/cors"
@@ -69,5 +70,6 @@ func (s *APIServer) configurateRouter() http.Handler {
 		AllowCredentials: true,
 	})
 
+	s.router.Use(middleware.Authorization)
 	return corsOpts.Handler(s.router)
 }
