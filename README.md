@@ -65,8 +65,10 @@ CORS headers are adding during the router configuration, allowed origins, method
 Heatlh-checking endpoint implemented by address /api/health and doesn't required authentication. In case in our application checks just connection to database.
 
 ## What should have been done better?
+- **Application must be covered with tests!!!**
 - Domain models should be validated. Haven't done that due to lack of time, also creating domain models happens only after validation request models, so, in case of our service there should be no errors related to this.
 - For model validations should be used some package.
 - Probably should have used gRPC.
 - Refresh token mechanism must be implemented.
 - Swagger documentation for API methods is better, than describing them in readme.
+- Abilities to create, modify and delete for entities of types PointType, City and User must be implemented.
