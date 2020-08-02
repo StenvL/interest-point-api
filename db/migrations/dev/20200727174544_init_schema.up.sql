@@ -12,8 +12,8 @@ CREATE TABLE IF NOT EXISTS point (
     id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
 	name VARCHAR(150) NOT NULL,
 	description TEXT,
-	type_id INT,
-	city_id INT,
+	type_id INT NOT NULL,
+	city_id INT NOT NULL,
 	lon INT,
 	lat INT,
 
