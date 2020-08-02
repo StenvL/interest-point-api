@@ -27,9 +27,9 @@ func NewPoint(pointRequestBody *requests.PointRequestBody) *Point {
 	return &Point{
 		Name:        pointRequestBody.Name,
 		Description: pointRequestBody.Description,
-		Type:        &PointType{ID: pointRequestBody.TypeID},
-		City:        &City{ID: pointRequestBody.CityID},
-		Lon:         pointRequestBody.Lon,
-		Lat:         pointRequestBody.Lat,
+		Type:        &PointType{ID: *pointRequestBody.TypeID},
+		City:        &City{ID: *pointRequestBody.CityID},
+		Lon:         *pointRequestBody.Lon,
+		Lat:         *pointRequestBody.Lat,
 	}
 }

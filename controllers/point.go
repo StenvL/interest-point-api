@@ -93,6 +93,12 @@ func CreatePoint(s *services.PointService) http.HandlerFunc {
 			return
 		}
 
+		err = pointRequestBody.IsValid()
+		if err != nil {
+			utils.JSONError(w, "Request body is incorrect", err.Error(), http.StatusBadRequest)
+			return
+		}
+
 		id, err := s.Create(pointRequestBody)
 		if err != nil {
 			utils.JSONError(w, "An error accurred while creating the point", err.Error(), http.StatusInternalServerError)
@@ -115,6 +121,12 @@ func EditPoint(s *services.PointService) http.HandlerFunc {
 
 		var pointRequestBody *requests.PointRequestBody
 		err = json.NewDecoder(r.Body).Decode(&pointRequestBody)
+		if err != nil {
+			utils.JSONError(w, "Request body is incorrect", err.Error(), http.StatusBadRequest)
+			return
+		}
+
+		err = pointRequestBody.IsValid()
 		if err != nil {
 			utils.JSONError(w, "Request body is incorrect", err.Error(), http.StatusBadRequest)
 			return
