@@ -4,7 +4,7 @@ Interest point API is an API service that provides ability to work with points o
 ## Deploy
 To deploy application you need to use docker and docker-compose. Docker-compose.yml file contains 2 services: mysql (for database API service works with) and API server, written on golang. You can configure some variables that uses to deploying application in .env file. By default, mysql database deploys on port 3306, API server - on port 3000.
 
-*Note:* if you'd like to change any parameters for database, you, probably, need to change database_url parameter in configs/apiserver.toml file.
+**Note:** if you'd like to change any parameters for database, you, probably, need to change database_url parameter in configs/apiserver.toml file.
 
 **Note:** by default in configs/apiserver.toml file connection to database establishes through host.docker.internal:3306 address. If you'd like to deploy application in machine with any OS but MacOS, you need to change this address to the one, that represents localhost for docker.
 
@@ -17,13 +17,13 @@ To work with points of interest, there were implemented RESTfull API service wit
 
 In the end of doing this test task, I remebered about gRPC technology that I used in one project while studying at the university. Maybe it would be better (in terms of speed and server load) and easier to use gRPC, but I didn't have enough time to rewrite service, using gRPC.
 
-The service supports the next methods (firstly I wanted to create Swagger documentation, but didn't have enough time for it):
-**GET /api/points** - returns list of points by city. City is mandatory parameter that must contains city ID.
-**GET /api/points/{id}** - return point by its ID.
-**POST /api/points **- creates new point of interest. Request body must correspond to struct in file models/domain/point-request-body.go
-**PUT /api/points/{id}** - updates existent point. Request body must correspond to struct in file models/requests/point-request-body.go.
-**GET /api/nearest-point** - returns list of points that placed in mentioned radius. Lon, lat and radius are mandatory parameters.
-**GET /api/health** - health endpoint.
+The service supports the next methods (firstly I wanted to create Swagger documentation, but didn't have enough time for it):  
+**GET /api/points** - returns list of points by city. City is mandatory parameter that must contains city ID.  
+**GET /api/points/{id}** - return point by its ID.  
+**POST /api/points** - creates new point of interest. Request body must correspond to struct in file models/domain/point-request-body.go.  
+**PUT /api/points/{id}** - updates existent point. Request body must correspond to struct in file models/requests/point-request-body.go.  
+**GET /api/nearest-point** - returns list of points that placed in mentioned radius. Lon, lat and radius are mandatory parameters.  
+**GET /api/health** - health endpoint.  
 **POST /api/authenticate** - authenticates user. Request body must correspond to struct in file models/domain/auth-request.go.
 
 There were some mandatory requirments and some additional. Let's take a look on each of them.
